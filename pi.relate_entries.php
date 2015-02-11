@@ -69,7 +69,7 @@ class Relate_entries {
       //echo ee()->db->last_query();
       if ($results->num_rows() == 0) {
         // no matches; we can stop here
-        $this->return_data = "";
+        $this->return_data = "0";
         return;
       }
 
@@ -85,7 +85,7 @@ class Relate_entries {
       }
     }
 
-    $this->return_data = (count($entries) > 0)? implode("|", $entries) : "";
+    $this->return_data = (count($entries) > 0)? implode("|", $entries) : "0";
   }
 
   function usage() {
