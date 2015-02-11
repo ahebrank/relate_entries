@@ -88,11 +88,18 @@ class Relate_entries {
     $this->return_data = (count($entries) > 0)? implode("|", $entries) : "0";
   }
 
+  // do any entries meet the criteria
+  function has_any() {
+    if (empty($this->return_data) || $this->return_data == "0") {
+      return "0";
+    }
+    return "1";
+  }
+
   // return a simple list of links
   function link_list() {
     if (empty($this->return_data) || $this->return_data == "0") {
-      $this->return_data = "";
-      return;
+      return "";
     }
 
     $ids = explode("|", $this->return_data);
@@ -103,9 +110,7 @@ class Relate_entries {
       ->get();
 
     if ($entries->num_rows() == 0) {
-      $this->return_data = "";
-      return;
-    }
+      return "";    }
 
     // from http://stackoverflow.com/questions/8245405/expressionengine-how-to-get-the-path-of-a-page-given-its-entry-id-with-the-str
     // lookup the URL from the crazy EE page hash
@@ -119,8 +124,7 @@ class Relate_entries {
     }
     $output .= "</ul>\n";
 
-    $this->return_data = $output;
-    return $this->return_data;
+    return $output;
   }
 
   function usage() {
