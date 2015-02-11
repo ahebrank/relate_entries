@@ -90,8 +90,12 @@ class Relate_entries {
 
   // return a simple list of links
   function link_list() {
+    if (empty($this->return_data) || $this->return_data == "0") {
+      $this->return_data = "";
+      return;
+    }
+
     $ids = explode("|", $this->return_data);
-    if (empty($ids)) return;
 
     $entries = ee()->db->select('*')
       ->from('channel_titles')
@@ -116,6 +120,7 @@ class Relate_entries {
     $output .= "</ul>\n";
 
     $this->return_data = $output;
+    return $this->return_data;
   }
 
   function usage() {
