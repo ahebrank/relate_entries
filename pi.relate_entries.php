@@ -88,6 +88,36 @@ class Relate_entries {
     $this->return_data = (count($entries) > 0)? implode("|", $entries) : "0";
   }
 
+  // return a simple list of links
+  function link_list() {
+    $ids = explode("|", $this->return_data);
+    if (empty($ids)) return;
+
+    $entries = ee()->db->select('*')
+      ->from('channel_titles')
+      ->where_in('entry_id', $ids)
+      ->get();
+
+    if ($entries->num_rows() == 0) {
+      $this->return_data = "";
+      return;
+    }
+
+    // from http://stackoverflow.com/questions/8245405/expressionengine-how-to-get-the-path-of-a-page-given-its-entry-id-with-the-str
+    // lookup the URL from the crazy EE page hash
+    $site_id = ee()->config->item('site_id'); // Get site id (MSM safety)
+    $site_pages = ee()->config->item('site_pages'); // Get pages array
+
+    $output = "<ul>\n";
+    foreach ($entries->result() as $e) {
+      $page_url = $site_pages[$site_id]['uris'][$e->entry_id];
+      $output .= '<li><a href="'. $page_url . '">' . $e->title . "</a></li>\n";
+    }
+    $output .= "</ul>\n";
+
+    $this->return_data = $output;
+  }
+
   function usage() {
     ob_start();
 ?>
