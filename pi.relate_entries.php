@@ -102,6 +102,9 @@ class Relate_entries {
       return "";
     }
 
+    // decide how to do the URLs
+    $title_permalink = ee()->TMPL->fetch_param('title_permalink', null);
+
     $ids = explode("|", $this->return_data);
 
     $entries = ee()->db->select('*')
@@ -110,7 +113,8 @@ class Relate_entries {
       ->get();
 
     if ($entries->num_rows() == 0) {
-      return "";    }
+      return "";    
+    }
 
     // from http://stackoverflow.com/questions/8245405/expressionengine-how-to-get-the-path-of-a-page-given-its-entry-id-with-the-str
     // lookup the URL from the crazy EE page hash
@@ -119,7 +123,17 @@ class Relate_entries {
 
     $output = "<ul>\n";
     foreach ($entries->result() as $e) {
-      $page_url = $site_pages[$site_id]['uris'][$e->entry_id];
+      if (!is_null($title_permalink)) {
+        $page_url = ee()->functions->create_url($title_permalink . '/' . $e->url_title);
+      }
+      elseif (isset($site_pages[$site_id]['uris'][$e->entry_id])) {
+        // I think this is for Pages
+        $page_url = $site_pages[$site_id]['uris'][$e->entry_id];
+      }
+      else {
+        // hmm
+        $page_url = $e->url_title;
+      }
       $output .= '<li><a href="'. $page_url . '">' . $e->title . "</a></li>\n";
     }
     $output .= "</ul>\n";
