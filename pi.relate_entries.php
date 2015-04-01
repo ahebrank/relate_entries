@@ -121,7 +121,7 @@ class Relate_entries {
     $site_id = ee()->config->item('site_id'); // Get site id (MSM safety)
     $site_pages = ee()->config->item('site_pages'); // Get pages array
 
-    $output = '<ul class="relate-entries-list">\n';
+    $output = '<ul class="relate-entries-list">' . "\n";
     foreach ($entries->result() as $e) {
       if (!is_null($title_permalink)) {
         $page_url = ee()->functions->create_url($title_permalink . '/' . $e->url_title);
