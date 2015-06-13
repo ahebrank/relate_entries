@@ -104,13 +104,20 @@ class Relate_entries {
 
     // decide how to do the URLs
     $title_permalink = ee()->TMPL->fetch_param('title_permalink', null);
+    $order_by = ee()->TMPL->fetch_param('order_by', null);
 
     $ids = explode("|", $this->return_data);
 
     $entries = ee()->db->select('*')
       ->from('channel_titles')
-      ->where_in('entry_id', $ids)
-      ->get();
+      ->where_in('entry_id', $ids);
+
+    if (!is_null($order_by)) {
+      $order_by = explode(" ", $order_by);
+      $sort = (count($order_by==2)? $order_by[1]: "asc");
+      $entries = $entries->order_by($order_by[0], $sort);
+    }
+    $entries = $entries->get();
 
     if ($entries->num_rows() == 0) {
       return "";    
